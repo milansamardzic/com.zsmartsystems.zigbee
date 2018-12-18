@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.zsmartsystems.zigbee.dongle.telegesis.ZigBeeDongleTelegesis;
+import com.zsmartsystems.zigbee.dongle.telegesis.internal.protocol.TelegesisAckMessageEvent;
 import com.zsmartsystems.zigbee.dongle.telegesis.internal.protocol.TelegesisCommand;
 import com.zsmartsystems.zigbee.dongle.telegesis.internal.protocol.TelegesisDisplayNetworkInformationCommand;
 import com.zsmartsystems.zigbee.dongle.telegesis.internal.protocol.TelegesisEvent;
@@ -183,10 +184,13 @@ public class TelegesisFrameHandler {
                         for (int value : responseData) {
                             builder.append(String.format("%c", value));
                         }
-                        logger.debug("RX Telegesis Data:{}", builder.toString());
+                        logger.debug("---RX Telegesis Data:{}", builder.toString());
 
                         // Use the Event Factory to get an event
                         TelegesisEvent event = TelegesisEventFactory.getTelegesisFrame(responseData);
+                        if (event instanceof TelegesisAckMessageEvent) {
+                            System.out.println("");
+                        }
                         if (event != null) {
                             notifyEventReceived(event);
                             scheduleNetworkStatePolling();
